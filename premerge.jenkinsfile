@@ -37,6 +37,7 @@ pipeline {
         always {
             junit 'junit.xml'
             cobertura coberturaReportFile: 'coverage.xml'
+            cleanWs()
         }
     }
 }
