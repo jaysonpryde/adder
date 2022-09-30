@@ -61,7 +61,7 @@ pipeline {
                                 credentialsId: 'github-jaysonpryde-priv', keyFileVariable: 'KEYFILE')]) {
                                     sh """
                                         GIT_SSH_COMMAND='ssh -i $KEYFILE -o StrictHostKeyChecking=no' git tag ${version_g}
-                                    """"
+                                    """
 
                                     sh """
                                         GIT_SSH_COMMAND='ssh -i $KEYFILE -o StrictHostKeyChecking=no' git push origin ${version_g}
