@@ -2,6 +2,7 @@ pipeline {
     agent {
         dockerfile {
             label 'docker'
+            filename 'premerge.dockerfile'
         }
     }
     parameters {
@@ -36,6 +37,7 @@ pipeline {
         always {
             junit 'junit.xml'
             cobertura coberturaReportFile: 'coverage.xml'
+            cleanWs()
         }
     }
 }
