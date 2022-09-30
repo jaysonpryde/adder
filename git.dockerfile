@@ -6,3 +6,4 @@ RUN adduser --disabled-password --gecos "" --uid 1000 --shell /bin/bash jenkins
 
 RUN git config --system user.email jaysonpryde@gmail.com
 RUN git config --system user.name "Jayson Pryde"
+RUN git config --global --add safe.directory '*'
