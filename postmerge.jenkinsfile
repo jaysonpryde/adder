@@ -1,41 +1,53 @@
 pipeline {
-    agent {
-        dockerfile {
-            label 'docker'
-        }
-    }
-    parameters {
-        string(name: 'REF', defaultValue: '\${ghprbActualCommit}', description: 'Commit to build')
+    agent none
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '1000'))
     }
     stages {
-        stage('Hello GitHub') {
+        stage('Package, Test, & Deliver') {
+            agent {
+                dockerfile {
+                    label 'aws-aws-agent'
+                    filename 'cd-env.dockerfile'
+                }
+            }
             steps {
-                echo "Hello GitHub!"
+                sh """
+                    ./package.sh 0.1.0
+                    ./integration-test.sh 3 8 11 0.1.0
+                """
             }
         }
-        stage('Compile') {
+        stage('Push git tag') {
+            agent { label 'docker' }
             steps {
-                sh 'python3 -m compileall adder.py'
-            }
-        }
-        stage('Run') {
-            steps {
-                sh 'python3 adder.py 3 5'
-            }
-        }
-        stage('Unit test') {
-            steps {
-                sh '''python3 -m pytest \
-                    -v --junitxml=junit.xml \
-                    --cov-report xml --cov adder adder.py
-                '''
+                script {
+                    try {
+                        container = docker.build("git", "-f git.dockerfile .")
+                        container.inside {
+                            withCredentials([sshUserPrivateKey(
+                                credentialsId: 'github-jaysonpryde-priv', keyFileVariable: 'KEYFILE')]) {
+                                withEnv(['GIT_SSH_COMMAND=ssh -o StrictHostKeyChecking=no -i ${KEYFILE}']) {
+                                    sh "git tag 0.1.0"
+                                    sh "git push origin 0.1.0"
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        sh "git tag -d ${version_g} || true"
+                        throw e
+                    }
+                }
             }
         }
     }
     post {
         always {
-            junit 'junit.xml'
-            cobertura coberturaReportFile: 'coverage.xml'
+            script {
+                currentBuild.description = version_g
+            }
+            cleanWs()
         }
     }
 }
+
