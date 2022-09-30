@@ -60,9 +60,6 @@ pipeline {
                             withCredentials([sshUserPrivateKey(
                                 credentialsId: 'github-jaysonpryde-priv', keyFileVariable: 'KEYFILE')]) {
                                 withEnv(['GIT_SSH_COMMAND=ssh -o StrictHostKeyChecking=no -i ${KEYFILE}']) {
-                                    sh "git config --system user.email jaysonpryde@gmail.com"
-                                    sh "git config --system user.name 'Jayson Pryde'"
-                                    sh "git config --global --add safe.directory '*'"
                                     sh "git tag ${version_g}"
                                     sh "git push origin ${version_g}"
                                 }
