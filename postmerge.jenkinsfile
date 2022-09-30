@@ -56,7 +56,7 @@ pipeline {
     post {
         always {
             script {
-                currentBuild.description = 0.1.0
+                currentBuild.description = "0.1.0"
             }
             cleanWs()
         }
