@@ -75,8 +75,10 @@ pipeline {
     }
     post {
         always {
-            script {
-                currentBuild.description = version_g
+            node('docker') {
+                script {
+                    currentBuild.description = version_g
+                }
             }
             cleanWs()
         }
