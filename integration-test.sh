@@ -5,7 +5,8 @@ FIRST=$1
 SECOND=$2
 EXPECTED=$3
 VERSION=${4:-latest}
-SUM=$(docker run jaysonpryde/adder:${VERSION} ${FIRST} ${SECOND})
+IMAGE="ci_cd_v1"
+SUM=$(docker run ${IMAGE}:${VERSION} ${FIRST} ${SECOND})
 
 if [[ "${SUM}" == "${EXPECTED}" ]]; then
     echo "Integration test passed"
