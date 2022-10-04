@@ -1,17 +1,15 @@
 #!/bin/bash
 set -e
 
-FIRST=$1
-SECOND=$2
-EXPECTED=$3
-VERSION=${4:-latest}
+EXPECTED=11
+VERSION=${1:-latest}
 IMAGE="ci_cd_v1"
-SUM=$(docker run ${IMAGE}:${VERSION} ${FIRST} ${SECOND})
+SUM=$(docker run ${IMAGE}:${VERSION} 8 3)
 
 if [[ "${SUM}" == "${EXPECTED}" ]]; then
     echo "Integration test passed"
 else
-    echo "[ERROR] ${FIRST} + ${SECOND} returned ${SUM}, not ${EXPECTED}" >&2
+    echo "[ERROR] 8 + 3 returned ${SUM}, not ${EXPECTED}" >&2
     exit 1
 fi
 
