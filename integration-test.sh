@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+echo "Integration test started ..."
 EXPECTED=11
 VERSION=${1:-latest}
 IMAGE="ci_cd_v1"
